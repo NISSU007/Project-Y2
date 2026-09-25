@@ -1,0 +1,19 @@
+{
+  "name": "mala-self-service",
+  "version": "1.0.0",
+  "description": "ระบบสั่งหม่าล่า Self Service",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "qrcode": "^1.5.4",
+    "sqlite3": "^6.0.1"
+  }
+}
