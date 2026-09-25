@@ -1,0 +1,44 @@
+<%- include('partials/head', { title: 'หน้าแรก' }) %>
+<body>
+<!-- ===== หน้าแรก : เลือกหน้าจอที่จะใช้งาน ===== -->
+<main class="home">
+
+  <!-- ===== ส่วนหัวหน้าแรก ===== -->
+  <section class="home-hero">
+    <div class="bowl">🍲</div>
+    <div>
+      <h1>หม่าล่า Self Service</h1>
+      <p class="muted">เลือกหน้าจอที่ต้องการเปิดใช้งาน</p>
+    </div>
+  </section>
+
+  <!-- ===== ปุ่มไปหน้าพนักงาน ===== -->
+  <section class="home-grid">
+    <a class="home-card" href="/qr">
+      <span class="ico">🔳</span><h3>QR Code ประจำโต๊ะ</h3><p>เปิดให้ลูกค้าสแกนเข้าสั่งอาหาร</p>
+    </a>
+    <a class="home-card" href="/cashier">
+      <span class="ico">💵</span><h3>พนักงานแคชเชียร์</h3><p>รับชำระเงินสด</p>
+    </a>
+    <a class="home-card" href="/kitchen">
+      <span class="ico">👨‍🍳</span><h3>พนักงานครัว</h3><p>ออเดอร์ที่ต้องปรุง</p>
+    </a>
+    <a class="home-card" href="/counter">
+      <span class="ico">🛎️</span><h3>พนักงานหน้าเคาน์เตอร์</h3><p>ส่งมอบอาหาร และแจ้งเตือนลูกค้า</p>
+    </a>
+  </section>
+
+  <!-- ===== ลิงก์เข้าหน้าลูกค้าแต่ละโต๊ะ (ทดสอบบนคอม) ===== -->
+  <section>
+    <h3 style="margin-bottom:10px">ทดสอบหน้าลูกค้า (แทนการสแกน)</h3>
+    <div class="table-links">
+      <% tables.forEach(function (t) { %>
+        <a href="<%= t.QR_Code_URL %>">โต๊ะ <%= t.Table_Number %></a>
+      <% }) %>
+    </div>
+    <p class="muted" style="margin-top:14px">ที่อยู่สำหรับมือถือในวง Wi-Fi เดียวกัน: <b><%= baseURL %></b></p>
+  </section>
+
+</main>
+</body>
+</html>
