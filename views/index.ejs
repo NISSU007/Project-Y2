@@ -1,44 +1,56 @@
-<%- include('partials/head', { title: 'หน้าแรก' }) %>
+<%- include('../partials/head', { title: 'ออเดอร์ที่พร้อมเสิร์ฟ', refresh: selected ? 0 : 10 }) %>
 <body>
-<!-- ===== หน้าแรก : เลือกหน้าจอที่จะใช้งาน ===== -->
-<main class="home">
+<div class="staff">
+  <%- include('../partials/staff-top', { roleLabel: 'หน้าเคาน์เตอร์' }) %>
 
-  <!-- ===== ส่วนหัวหน้าแรก ===== -->
-  <section class="home-hero">
-    <div class="bowl">🍲</div>
-    <div>
-      <h1>หม่าล่า Self Service</h1>
-      <p class="muted">เลือกหน้าจอที่ต้องการเปิดใช้งาน</p>
+  <main class="s-main">
+    <!-- ===== หัวข้อหน้าออเดอร์ที่พร้อมเสิร์ฟ ===== -->
+    <h1 class="s-title">🛎️ แสดงออเดอร์ที่พร้อมเสิร์ฟ</h1>
+    <p class="muted" style="margin-top:-8px">ออเดอร์ที่ครัวปรุงเสร็จแล้ว รอส่งมอบให้ลูกค้า</p>
+
+    <div class="s-layout <%= selected ? 'has-side' : '' %>">
+
+      <!-- ===== การ์ดออเดอร์ที่ปรุงเสร็จ ===== -->
+      <section class="order-grid">
+        <% if (list.length === 0) { %><p class="muted">ยังไม่มีออเดอร์ที่ปรุงเสร็จ</p><% } %>
+        <% list.forEach(function (o) { %>
+          <div class="o-card <%= selected && selected.Order_ID === o.Order_ID ? 'selected' : '' %>">
+            <div class="o-card-head">
+              <span class="o-no"><%= orderNo(o.Reference_Code) %></span>
+              <span class="muted"><%= o.Order_Time %> น.</span>
+            </div>
+            <div class="o-meta"><span>โต๊ะ <%= o.Table_Number %></span><span><%= o.Item_Count %> รายการ</span></div>
+            <ul class="o-items">
+              <% o.items.forEach(function (it) { %>
+                <li><span>• <%= it.Menu_Name %> <% if (it.Spiciness_Level) { %><span class="spice">🌶 <%= it.Spiciness_Level %></span><% } %></span><span>x<%= it.Quantity %></span></li>
+              <% }) %>
+            </ul>
+            <!-- ===== ปุ่มอัปเดตสถานะ / รายละเอียด ===== -->
+            <div class="o-actions">
+              <a class="btn btn-green btn-sm" href="/counter/status?id=<%= o.Order_ID %>">อัปเดตสถานะ</a>
+              <a class="btn btn-light btn-sm" href="?id=<%= o.Order_ID %>">รายละเอียด</a>
+            </div>
+          </div>
+        <% }) %>
+      </section>
+
+      <!-- ===== แผงรายละเอียดออเดอร์ ===== -->
+      <% if (selected) { %>
+        <aside class="panel">
+          <div class="detail-head">
+            <div>
+              <div class="muted">รายละเอียดออเดอร์ · โต๊ะ <%= selected.Table_Number %></div>
+              <span class="o-no"><%= orderNo(selected.Reference_Code) %></span>
+            </div>
+            <a class="close-x" href="/counter" aria-label="ปิด">✕</a>
+          </div>
+          <%- include('../partials/items-table', { order: selected }) %>
+        </aside>
+      <% } %>
     </div>
-  </section>
+  </main>
 
-  <!-- ===== ปุ่มไปหน้าพนักงาน ===== -->
-  <section class="home-grid">
-    <a class="home-card" href="/qr">
-      <span class="ico">🔳</span><h3>QR Code ประจำโต๊ะ</h3><p>เปิดให้ลูกค้าสแกนเข้าสั่งอาหาร</p>
-    </a>
-    <a class="home-card" href="/cashier">
-      <span class="ico">💵</span><h3>พนักงานแคชเชียร์</h3><p>รับชำระเงินสด</p>
-    </a>
-    <a class="home-card" href="/kitchen">
-      <span class="ico">👨‍🍳</span><h3>พนักงานครัว</h3><p>ออเดอร์ที่ต้องปรุง</p>
-    </a>
-    <a class="home-card" href="/counter">
-      <span class="ico">🛎️</span><h3>พนักงานหน้าเคาน์เตอร์</h3><p>ส่งมอบอาหาร และแจ้งเตือนลูกค้า</p>
-    </a>
-  </section>
-
-  <!-- ===== ลิงก์เข้าหน้าลูกค้าแต่ละโต๊ะ (ทดสอบบนคอม) ===== -->
-  <section>
-    <h3 style="margin-bottom:10px">ทดสอบหน้าลูกค้า (แทนการสแกน)</h3>
-    <div class="table-links">
-      <% tables.forEach(function (t) { %>
-        <a href="<%= t.QR_Code_URL %>">โต๊ะ <%= t.Table_Number %></a>
-      <% }) %>
-    </div>
-    <p class="muted" style="margin-top:14px">ที่อยู่สำหรับมือถือในวง Wi-Fi เดียวกัน: <b><%= baseURL %></b></p>
-  </section>
-
-</main>
+  <%- include('../partials/counter-nav') %>
+</div>
 </body>
 </html>

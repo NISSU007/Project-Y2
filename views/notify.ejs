@@ -1,0 +1,63 @@
+<%- include('../partials/head', { title: 'แจ้งเตือนลูกค้า', refresh: list.length === 0 ? 10 : 0 }) %>
+<body>
+<div class="staff">
+  <%- include('../partials/staff-top', { roleLabel: 'หน้าเคาน์เตอร์' }) %>
+
+  <main class="s-main">
+    <!-- ===== หัวข้อหน้าแจ้งเตือน ===== -->
+    <h1 class="s-title">🔔 แจ้งเตือนและยืนยันการรับอาหาร</h1>
+    <% if (message === 'renotify') { %><div class="alert alert-green" role="status">🔔 ส่งแจ้งเตือนซ้ำไปที่หน้าจอลูกค้าแล้ว</div><% } %>
+    <% if (message === 'done') { %><div class="alert alert-green" role="status">✔ ลูกค้ารับอาหารแล้ว ปิดออเดอร์เรียบร้อย</div><% } %>
+
+    <div class="status-layout">
+      <!-- ===== รายการออเดอร์ที่พร้อมเสิร์ฟ ===== -->
+      <section class="o-list">
+        <% if (list.length === 0) { %><p class="muted">ไม่มีออเดอร์ที่รอลูกค้ามารับ</p><% } %>
+        <% list.forEach(function (o) { %>
+          <a class="o-row <%= selected && selected.Order_ID === o.Order_ID ? 'selected' : '' %>" href="?id=<%= o.Order_ID %>">
+            <div class="o-row-top">
+              <span class="o-no"><%= orderNo(o.Reference_Code) %></span>
+              <span>โต๊ะ <%= o.Table_Number %></span>
+              <span class="muted"><%= o.Order_Time %> น.</span>
+            </div>
+            <span class="badge badge-green"><%= o.Order_Status %></span>
+          </a>
+        <% }) %>
+      </section>
+
+      <!-- ===== รายละเอียด + ปุ่มแจ้งเตือน / ยืนยันรับอาหาร ===== -->
+      <% if (selected) { %>
+        <section class="panel">
+          <div class="detail-head">
+            <div><span class="o-no"><%= orderNo(selected.Reference_Code) %></span> <span class="muted">โต๊ะ <%= selected.Table_Number %></span></div>
+            <span class="badge badge-green"><%= selected.Order_Status %></span>
+          </div>
+          <div class="food-visual">
+            <div class="plate">🍲</div>
+            <ul class="o-items" style="flex:1">
+              <% selected.items.forEach(function (it) { %>
+                <li><span>• <%= it.Menu_Name %> <% if (it.Spiciness_Level) { %><span class="spice">🌶 <%= it.Spiciness_Level %></span><% } %></span><span>x<%= it.Quantity %></span></li>
+              <% }) %>
+            </ul>
+          </div>
+          <p class="muted">ส่งแจ้งเตือนไปแล้ว <b><%= selected.notify %></b> ครั้ง</p>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <!-- ===== ปุ่มแจ้งเตือนซ้ำ ===== -->
+            <form method="post" action="/counter/notify/<%= selected.Order_ID %>">
+              <button class="btn btn-red btn-block" type="submit">🔔 แจ้งเตือนพร้อมรับอาหาร</button>
+            </form>
+            <!-- ===== ปุ่มยืนยันลูกค้ารับอาหาร ===== -->
+            <form method="post" action="/counter/complete/<%= selected.Order_ID %>">
+              <button class="btn btn-light btn-block" type="submit">✓ ยืนยันลูกค้ารับอาหารแล้ว</button>
+            </form>
+          </div>
+        </section>
+      <% } %>
+    </div>
+  </main>
+
+  <%- include('../partials/counter-nav') %>
+</div>
+</body>
+</html>
